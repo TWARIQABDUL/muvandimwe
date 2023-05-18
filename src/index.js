@@ -7,15 +7,22 @@ import '@ionic/react/css/core.css';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Signup from './components/signup';
 import Login from './components/login';
+import { SessionProvider } from './session';
+import Home from './components/home';
+import Loading from './components/loadinf';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <BrowserRouter>
+    <SessionProvider>
       <Routes>
         <Route path='/' element={<App />} />
         <Route path='/signin' element={<Login/>}/>
-        <Route path='/sign_up' element={<Signup/>}/>
+        <Route path='/signup' element={<Signup/>}/>
+        <Route path='/home' element={<Home/>}/>
+        <Route path='/loading' element={<Loading/>}/>
       </Routes>
+    </SessionProvider>
     </BrowserRouter>
   </React.StrictMode>
 );
