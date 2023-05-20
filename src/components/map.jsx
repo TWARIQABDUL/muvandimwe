@@ -38,7 +38,8 @@ function Map() {
   });
 
   return (
-    <MapContainer center={[position.lat, position.lng]} zoom={15} style={{ height: '400px' }}>
+    <div className="map">
+      <MapContainer center={[position.lat, position.lng]} zoom={15} style={{ height: '400px' }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker position={[position.lat, position.lng]} icon={myIcon}>
         <Popup>
@@ -47,6 +48,8 @@ function Map() {
         <Polyline positions={[pointA, pointB]} color="red" />
       </Marker>
     </MapContainer>
+    </div>
+    
   );
 }
 

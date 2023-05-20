@@ -1,25 +1,21 @@
-import React, { useContext, useEffect, useState } from 'react'
-import {SessionContext, SessionProvider } from '../session'
+import React, { useContext} from 'react'
+import {SessionContext} from '../session'
 import { signOut } from '@firebase/auth'
 import { auth } from '../firebase'
 import Map from './map'
+import NavBar from './navbar'
 
 function Home() {
     const {session} = useContext(SessionContext)
     // console.log(session.uid);
-    const logOut =()=>{
-        signOut(auth).then(som =>{
-            console.log(som);
-        }).catch(err =>{
-            console.log(err);
-        })
-    }
+    
   return (
-    <div>welcome  {session.email}
+    <>
+    <NavBar/>
     <Map/>
-    <button type="submit" onClick={logOut}>Log Out</button>
-    </div>
+    </>
+    
+
   )
 }
-
 export default Home
