@@ -4,7 +4,7 @@ import im from "../images/soundcard.jpeg"
 import { SessionContext } from '../session'
 import { signOut } from '@firebase/auth'
 import { auth } from '../firebase'
-function NavContent(prop) {
+function NavContent() {
     const {session} = useContext(SessionContext)
     const logOut =()=>{
         signOut(auth).then(som =>{

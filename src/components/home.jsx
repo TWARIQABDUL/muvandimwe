@@ -4,6 +4,7 @@ import { signOut } from '@firebase/auth'
 import { auth } from '../firebase'
 import Map from './map'
 import NavBar from './navbar'
+import Products from './products'
 
 function Home() {
     const {session} = useContext(SessionContext)
@@ -12,7 +13,8 @@ function Home() {
   return (
     <>
     <NavBar/>
-    <Map/>
+    <Products/>
+    {/* <Map/> */}
     </>
     
 

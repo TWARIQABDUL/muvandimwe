@@ -3,9 +3,10 @@ import NavContent from './navcontent';
 
 function NavBar() {
   const [isNav, showNav] = useState(false);
-
+  const leafMap = document.getElementsByClassName("leaflet-container")
   const taggleNav = () => {
     showNav(!isNav);
+    
   };
   return (
     <div className='nav'>
@@ -13,7 +14,7 @@ function NavBar() {
       <div id='taggle' onClick={taggleNav}>
         <p></p>
       </div>
-      {isNav ? <NavContent fn = {taggleNav} /> : ""}
+      {isNav && <NavContent />}
     </div>
   );
 }
