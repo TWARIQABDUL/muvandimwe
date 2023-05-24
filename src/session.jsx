@@ -41,7 +41,7 @@ export const SessionProvider = ({ children }) => {
                 }
                 setLoading(false);
                 setSession(user);
-                navigate('/');
+                // navigate('/');
               }
             })
           }

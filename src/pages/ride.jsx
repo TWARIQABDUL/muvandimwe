@@ -1,12 +1,11 @@
 import React from 'react'
 import NavBar from '../components/navbar'
-import Map from '../components/map'
-
+import DriverList from '../components/rideList'
 function Ride() {
   return (
     <div>
         <NavBar/>
-        <Map/>
+        <DriverList/>
     </div>
   )
 }
