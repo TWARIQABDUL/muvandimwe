@@ -2,14 +2,16 @@
 import React, { useState } from 'react';
 import { createUserWithEmailAndPassword } from '@firebase/auth';
 import { auth, db, provider } from '../firebase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { signInWithPopup } from '@firebase/auth';
 import { collection, doc, setDoc } from '@firebase/firestore';
 function Signup() {
+    const [idisabled, isdisabled] = useState(false)
     const userCollectionRef = collection(db, "users")
     const [username, setUserName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPaswword] = useState("")
+    const navigate = useNavigate()
     const createUser = async (uid, names) => {
         const my_info = {
             name: names,
@@ -18,31 +20,31 @@ function Signup() {
         const adduser = await setDoc(docRef, my_info)
     }
     const signUp = async (e) => {
+        isdisabled(true)
         createUserWithEmailAndPassword(auth, email, password)
             .then((userCredentils) => {
-                console.log(userCredentils.user.uid);
                 createUser(userCredentils.user.uid, username)
                     .then(suc => {
-                        console.log(suc);
+                        isdisabled(false)
+                        navigate("/")
                     })
             })
             .catch((err) => {
-                console.log("something went wrong");
+                navigate("/error")
             })
     }
     const emailSignUp = () => {
+        isdisabled(true)
         signInWithPopup(auth, provider)
             .then((users) => {
-                // console.log(users.user.uid);
                 createUser(users.user.uid, users.user.displayName)
                     .then(suc => {
-                        console.log(suc);
+                        isdisabled(false)
+                        navigate("/")
                     })
-                // console.log(user);
             }).catch(err => {
-                console.log(err);
+                navigate("/error")
             })
-        // console.log("hhh");
     }
     return (
         <div className='login-parent'>
@@ -53,10 +55,9 @@ function Signup() {
 
                     <input type="email" value={email} placeholder='example@example.com' className='input' onChange={(e) => { setEmail(e.target.value) }} />
                     <input type="password" value={password} placeholder='password' className='input' onChange={(e) => { setPaswword(e.target.value) }} />
-                    <button type="submit" className='login-button' onClick={signUp}>Create Acount</button>
+                    <button type="submit" className='login-button' disabled={idisabled} onClick={signUp}>Create Acount</button>
                     <p>allready have account <Link to="/signin">Sign In</Link></p>
-                    <button type="submit" className='login-button' onClick={emailSignUp}>Continue with Google</button>
-                    {/* <button type="submit" className='login-button' onClick={signUp}>Continue with Facebook</button> */}
+                    <button type="submit" className='login-button' disabled={idisabled} onClick={emailSignUp}>Continue with Google</button>
                 </div>
             </div>
         </div>

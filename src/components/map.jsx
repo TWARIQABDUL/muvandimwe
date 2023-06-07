@@ -6,7 +6,9 @@ import { Geolocation } from '@capacitor/geolocation';
 import im from "../images/myloc.png"
 import Loading from './loadinf';
 import { SessionContext } from '../session';
+import { useNavigate } from 'react-router-dom';
 function Map() {
+  const navigate = useNavigate()
   const [position, setPosition] = useState(null);
   const { session } = useContext(SessionContext);
   useEffect(() => {
@@ -15,7 +17,7 @@ function Map() {
         const { coords } = await Geolocation.getCurrentPosition();
         setPosition({ lat: coords.latitude, lng: coords.longitude });
       } catch (error) {
-        console.log(error);
+        navigate("/error")
       }
     };
     getPosition();

@@ -9,10 +9,11 @@ import Signup from './components/signup';
 import Login from './components/login';
 import { SessionProvider } from './session';
 import Home from './components/home';
-import Loading from './components/loadinf';
 import Ride from './pages/ride';
 import Hotels from './pages/hotels';
 import Restaurant from './pages/retaurant';
+import ErrorHandler from './pages/error';
+import Pickride from './pages/pickride';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -26,7 +27,8 @@ root.render(
         <Route path='/Ride' element={<Ride/>}/>
         <Route path='/Hotels' element={<Hotels/>}/>
         <Route path='/Restaurant' element={<Restaurant/>}/>
-
+        <Route path='/destination' element={<Pickride/>}/>
+        <Route path='/error' element={<ErrorHandler/>}/>
       </Routes>
     </SessionProvider>
     </BrowserRouter>

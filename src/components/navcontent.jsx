@@ -29,7 +29,7 @@ function NavContent() {
             <li><Link to="about">report problem</Link></li>
             <li><Link to="about">how we protect your privacy</Link></li>
         </ul>
-        <button onClick={logOut} className='login-button'>Log out</button>
+        <button onClick={logOut} className='login-button log-out'>Log out</button>
     </div>
   )
 }

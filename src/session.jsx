@@ -28,21 +28,43 @@ export const SessionProvider = ({ children }) => {
             onAuthStateChanged(auth, async (user) => {
               if (user == null) {
                 navigate('/signin')
-              } else {
-                const names = await getDocumentById(user.uid);
-                // console.log(names.name);
-                if (names && names.name) {
-                  try {
-                    await updateProfile(auth.currentUser, { displayName: names.name });
-                    // console.log("User display name updated!");
-                  } catch (error) {
-                    console.log("Error updating user display name:", error);
+              }else{
+                getDocumentById(user.uid)
+                .then(names =>{
+                  if (names && names.name) {
+                    try {
+                      updateProfile(auth.currentUser, { displayName: names.name })
+                      .then()
+                      .catch(err =>{
+                        console.log("fucked too");
+                      })
+                    } catch (error) {
+                      console.log("fails",error);
+                    }
                   }
-                }
-                setLoading(false);
-                setSession(user);
-                // navigate('/');
+                  setSession(user);
+                  setLoading(false);
+                }).catch(err=>{
+                  setLoading(false);
+                  navigate('error')
+                  console.log("failed");
+                })
               }
+              //  else {
+              //   const names = await getDocumentById(user.uid);
+              //   // console.log(names.name);
+              //   if (names && names.name) {
+              //     try {
+              //       await updateProfile(auth.currentUser, { displayName: names.name });
+              //       // console.log("User display name updated!");
+              //     } catch (error) {
+              //       console.log("Error updating user display name:", error);
+              //     }
+              //   }
+              //   setLoading(false);
+              //   setSession(user);
+              //   // navigate('/');
+              // }
             })
           }
           
