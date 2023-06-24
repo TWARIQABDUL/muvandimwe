@@ -39,7 +39,7 @@ function Driver({ lists }) {
   const letel = extractLetter(lists.name);
   return (
     <div className="driver-holder">
-      <Link to={`/destination?${lists.id}`} className="link-black">
+      <Link to={`/destination?driver=${lists.id}`} className="link-black">
         <div className="driver-profile">
           <LetterAvatar name={letel} size={50} radius={50} />
           {lists.name}

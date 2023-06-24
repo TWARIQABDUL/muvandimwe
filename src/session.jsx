@@ -1,4 +1,4 @@
-import { onAuthStateChanged, updateCurrentUser, updateProfile } from "@firebase/auth";
+import { onAuthStateChanged,updateProfile } from "@firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
 import { auth, db } from "./firebase";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +19,6 @@ export const SessionProvider = ({ children }) => {
             if (docSnap.exists()) {
               return { id: docSnap.id, ...docSnap.data() };
             } else {
-            //   console.log("No such document!");
               return null;
             }
           }
@@ -46,25 +45,9 @@ export const SessionProvider = ({ children }) => {
                   setLoading(false);
                 }).catch(err=>{
                   setLoading(false);
-                  navigate('error')
-                  console.log("failed");
                 })
               }
-              //  else {
-              //   const names = await getDocumentById(user.uid);
-              //   // console.log(names.name);
-              //   if (names && names.name) {
-              //     try {
-              //       await updateProfile(auth.currentUser, { displayName: names.name });
-              //       // console.log("User display name updated!");
-              //     } catch (error) {
-              //       console.log("Error updating user display name:", error);
-              //     }
-              //   }
-              //   setLoading(false);
-              //   setSession(user);
-              //   // navigate('/');
-              // }
+
             })
           }
           

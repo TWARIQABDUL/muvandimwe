@@ -23,11 +23,12 @@ function NavContent() {
             </div>
         </div>
         <ul>
-            <li><Link to="about">My Activity</Link></li>
-            <li><Link to="Question">Q&A</Link></li>
-            <li><Link to="about">help</Link></li>
-            <li><Link to="about">report problem</Link></li>
-            <li><Link to="about">how we protect your privacy</Link></li>
+            <li><Link to="#">My Activity</Link></li>
+            <li><Link to="../myride">Track Ride</Link></li>
+            <li><Link to="#">Q&A</Link></li>
+            <li><Link to="#">help</Link></li>
+            <li><Link to="#">report problem</Link></li>
+            <li><Link to="#">how we protect your privacy</Link></li>
         </ul>
         <button onClick={logOut} className='login-button log-out'>Log out</button>
     </div>

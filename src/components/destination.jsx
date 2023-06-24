@@ -1,26 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { Geolocation } from '@capacitor/geolocation';
-import { Link } from 'react-router-dom';
 import Map from "./map"
+import { SessionContext } from '../session';
+import { addDoc, collection } from '@firebase/firestore';
+import { db } from '../firebase';
+import { useLocation } from 'react-router-dom';
 function Destination() {
+    const [mes,setMes] = useState()
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+    const id = searchParams.get('driver');
+    const { session } = useContext(SessionContext);
     const [placeName, setPlaceName] = useState('');
-    const [destin,setDestination]= useState('');
-    const [spot,setSpot]= useState()
+    const [destin, setDestination] = useState('');
+    const [spot, setSpot] = useState()
     const API_KEY = "5d9c0866e28d49438f54ac4db78c33fe";
-    const getInput = (e)=>{
+    const getInput = (e) => {
         setDestination(e.target.value)
-        // console.log(e.target.value);
+    }
+    const makeOrder = async (loc) => {
+        const object = {
+            driverid: id,
+            customerid: session.uid,
+            location: loc
+        }
+        try {
+            console.log(loc);
+            const collectionRef = collection(db, 'orders')
+            addDoc(collectionRef, object)
+                .then((succ) => {
+                    setDestination('')
+                })
+                .catch(er => {
+                    console.log(er);
+                })
+        } catch (error) {
+            console.log("fuck",error);
+        }
+        return mes
     }
     const hundleOrder = async () => {
         try {
             const resultsName = await axios.get(`https://api.opencagedata.com/geocode/v1/json?q=${destin}&key=${API_KEY}`)
             const { results } = resultsName.data;
             setSpot(results[0].geometry)
-            console.log(spot);         
-    } catch (error) {
+            makeOrder(results[0].geometry)
+                .then(suc => {
+                    console.log("succes",suc);
+                })
+        } catch (error) {
 
-        }  
+        }
     }
     useEffect(() => {
         const fetchData = async () => {
@@ -48,10 +80,10 @@ function Destination() {
         <div className='form-holder'>
             <div className="inputs">
                 from<input type="email" disabled value={placeName ? placeName : "Loading"} className='input' />
-                to<input type="text" placeholder='to' value={destin} onChange={(e)=>getInput(e)} className='input' />
-                <button type="submit"  onClick={hundleOrder} className='login-button'>Order Ride</button>
+                to<input type="text" placeholder='to' value={destin} onChange={(e) => getInput(e)} className='input' />
+                <button type="submit" onClick={hundleOrder} className='login-button'>Order Ride</button>
             </div>
-            {spot && <Map dest={spot}/>}
+            {spot && <Map dest={spot} />}
         </div>
     )
 }

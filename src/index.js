@@ -14,6 +14,7 @@ import Hotels from './pages/hotels';
 import Restaurant from './pages/retaurant';
 import ErrorHandler from './pages/error';
 import Pickride from './pages/pickride';
+import Myride from './components/myride';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
@@ -29,6 +30,7 @@ root.render(
         <Route path='/Restaurant' element={<Restaurant/>}/>
         <Route path='/destination' element={<Pickride/>}/>
         <Route path='/error' element={<ErrorHandler/>}/>
+        <Route path='/myride' element={<Myride/>}/>
       </Routes>
     </SessionProvider>
     </BrowserRouter>
