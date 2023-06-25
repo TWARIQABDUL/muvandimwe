@@ -4,7 +4,9 @@
   "private": true,
   "dependencies": {
     "@capacitor/android": "^5.0.0",
+    "@capacitor/app": "^5.0.3",
     "@capacitor/core": "^5.0.0",
+    "@capacitor/dialog": "^5.0.4",
     "@capacitor/geolocation": "^5.0.0",
     "@firebase/auth": "^0.23.0",
     "@firebase/firestore": "^3.10.1",
