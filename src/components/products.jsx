@@ -1,8 +1,10 @@
 import React from 'react'
 import Product from './product'
 import car from "../images/car.png"
-import burger from "../images/hamburger.png"
+import burger from "../images/restaurant.png"
 import hotels from "../images/hotel.png"
+import apartment from '../images/apartment.png'
+import cofee from '../images/cofee.png'
 
 function Products() {
   return (
@@ -10,8 +12,8 @@ function Products() {
         <Product img={car} title="Ride"/>
         <Product img={burger} title="Restaurant"/>
         <Product img={hotels} title="Hotels"/>
-        <Product img={car} title=""/>
-        <Product img={car} title=""/>
+        <Product img={apartment} title="apartment"/>
+        <Product img={cofee} title="Cofee-shop"/>
 
 
     </div>

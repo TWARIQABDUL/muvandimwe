@@ -59,13 +59,13 @@ function Login() {
     return (
         <div className='login-parent'>
             <div className="login-form">
-                <h1>Welcome Back</h1>
+                <h1>Login</h1>
                 {error ? <Error message={error} /> : ""}
                 <div className="inputs">
                     <input type="email" placeholder='example@example.com' value={email} name="" className='input' onChange={(e) => { setEmail(e.target.value) }} />
                     <input type="password" placeholder='password' value={password} name="" className='input' onChange={(e) => { setPaswword(e.target.value) }} />
                     {idisabled ? <div className="login-button">waiting...</div> : <button type="submit" className='login-button' onClick={LoginUser}>Login</button>}
-                    <p>Don't have account <Link to='/signup'>Sign Up</Link></p>
+                     <Link to='/signup' className='signup'>Sign Up</Link>
                 </div>
             </div>
         </div>

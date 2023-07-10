@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Driver from './driver'
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase'
@@ -20,7 +20,10 @@ function DriverList() {
 
   if (loaded) {
     const Drivers = driverList.map((drive) => <Driver key={drive.id} lists={drive} />);
-    return <div className='drivers-list-holde'>{Drivers}</div>;
+    return (
+      <div className="service-lists">
+        <div className='drivers-list-holde'>{Drivers}</div>
+      </div>);
   }
 
   return (

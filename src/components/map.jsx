@@ -23,7 +23,7 @@ function Map(prop) {
     getPosition();
   }, []);
 
-  if (!position) {
+  if (!position || !session || !session.displayName) {
     return <Loading />;
   }
   const pointA = [position.lat, position.lng];

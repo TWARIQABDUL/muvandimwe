@@ -88,13 +88,13 @@ function Signup() {
         <div className='login-parent'>
             <div className="login-form">
             {error ? <Error message={error} /> : ""}
-                <h1>Create Account</h1>
+                <h1>Sign Up</h1>
                 <div className="inputs">
                     <input type="text" value={username} placeholder='John Doe' required className='input' onChange={(e) => { setUserName(e.target.value) }} />
                     <input type="email" value={email}  placeholder='example@example.com' className='input' onChange={(e) => { setEmail(e.target.value) }} />
                     <input type="password" value={password} placeholder='password' className='input' onChange={(e) => { setPaswword(e.target.value) }} />
                     {idisabled ? <div className='login-button'>waiting</div> :  <button type="submit" className='login-button' disabled={idisabled} onClick={signUp}>Create Acount</button>}
-                    <p>allready have account <Link to="/signin">Sign In</Link></p>
+                    <Link to="/signin" className='signup'>Sign In</Link>
                     {/* <button type="submit" className='login-button' disabled={idisabled} onClick={emailSignUp}>Continue with Google</button> */}
                 </div>
             </div>
