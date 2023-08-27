@@ -3,16 +3,16 @@ import axios from 'axios';
 import { Geolocation } from '@capacitor/geolocation';
 import { Dialog } from '@capacitor/dialog';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { addDoc, collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
+import { addDoc, collection, query, where, getDocs, doc, getDoc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
-import Map from './map';
 import Driver from './driver';
 import { SessionContext } from '../session';
-import check from '../images/check.png'
-import cance from '../images/close.png'
+import Tablerows from './tablerows';
+import Box from './box';
+
 
 function Destination() {
-    const [mes, setMes] = useState('');
+    const [load, setLoad] = useState(false);
     const location = useLocation();
     const searchParams = new URLSearchParams(location.search);
     const id = searchParams.get('driver');
@@ -22,10 +22,11 @@ function Destination() {
     const [spot, setSpot] = useState(null);
     const [success, setSuccess] = useState(false);
     const API_KEY = '5d9c0866e28d49438f54ac4db78c33fe';
-    const [driveInfo, setDriverInfo] = useState([]);
+    const [driverInfo, setDriverInfo] = useState([]);
     const [pending, setPending] = useState(true);
-    const navigate = useNavigate();
-
+    const [matchingDocuments, setMatchingDocuments] = useState([]);
+    const [userHistory, setUserHistory] = useState([])
+    const customerId = session?.uid || '';
     const getInput = (e) => {
         setDestination(e.target.value);
     };
@@ -64,10 +65,16 @@ function Destination() {
             setSuccess(false);
             return false;
         } else {
+            const currentDate = new Date();
+            const year = currentDate.getFullYear();
+            const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+            const day = String(currentDate.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
             const order = {
                 driverid: id,
                 customerid: session.uid,
                 location: location,
+                date: formattedDate,
                 status: 'active',
             };
             try {
@@ -98,7 +105,8 @@ function Destination() {
                         setSpot(results[0].geometry);
                         const orderPlaced = await makeOrder(results[0].geometry);
                         if (orderPlaced) {
-                            navigate(`../myride?myid=${session.uid}`);
+                            showAlert("success!", "thank you for using our services enjoy the ride")
+                            // navigate(`../myride?myid=${session.uid}`);
                         }
                     } else {
                         showAlert('Location Not Found', 'Currently, our service is not available in this area');
@@ -116,19 +124,6 @@ function Destination() {
     };
 
     useEffect(() => {
-        const getDriverInfo = async () => {
-            try {
-                const driverDocRef = doc(db, 'drivers', id);
-                const driverDocSnap = await getDoc(driverDocRef);
-                if (driverDocSnap.exists()) {
-                    const driverData = driverDocSnap.data();
-                    setDriverInfo([driverData]);
-                }
-            } catch (error) {
-                console.log('Error getting driver information:', error);
-            }
-        };
-
         const fetchData = async () => {
             try {
                 const position = await Geolocation.getCurrentPosition();
@@ -147,9 +142,148 @@ function Destination() {
             }
         };
 
+        const getDriverInfo = async () => {
+            try {
+                const driverDocRef = doc(db, 'drivers', id);
+                const driverDocSnap = await getDoc(driverDocRef);
+                if (driverDocSnap.exists()) {
+                    const driverData = driverDocSnap.data();
+                    setDriverInfo([driverData]);
+                }
+            } catch (error) {
+                console.log('Error getting driver information:', error);
+            }
+        };
+        // only the driver information
+        const getDriverDocumentById = async (documentId) => {
+            try {
+                const docRef = doc(db, "drivers", documentId);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    // Document exists, return the data
+                    return docSnap.data();
+                } else {
+                    // Document does not exist
+                    return null;
+                }
+            } catch (error) {
+                console.log('Error retrieving document:', error);
+                return null;
+            }
+        };
+        //   dont change anything if you dont know anything
+        const searchCustomerById = async (customerId) => {
+            const customersRef = collection(db, 'orders');
+            const q = query(customersRef, where('customerid', '==', customerId), where('status', '==', 'active'));
+            try {
+                const querySnapshot = await getDocs(q);
+                if (querySnapshot.empty) {
+                    console.log('No matching documents found.');
+                    setMatchingDocuments([]);
+                } else {
+                    const matchingDocuments = [];
+                    querySnapshot.forEach(async (doc) => {
+                        const data = doc.data();
+                        const driverData = await getDriverDocumentById(data.driverid);
+                        if (driverData) {
+                            const driverInfo = { id: doc.id, ...data, driver: driverData };
+                            matchingDocuments.push(driverInfo);
+                            setMatchingDocuments([...matchingDocuments]);
+                        }
+                    });
+                    setLoad(true);
+                }
+            } catch (error) {
+                console.log('Error searching for documents:', error);
+                setMatchingDocuments([]);
+            }
+        };
+        //   get history information
+
+        const getHistory = async (customerId) => {
+            const customersRef = collection(db, 'orders');
+            const q = query(customersRef,
+                where('customerid', '==', customerId));
+            const unsubscribe = onSnapshot(q, (snapshot) => {
+                const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+                if (items) {
+                    const userHistory = [];
+                    items.forEach(async (doc) => {
+                        const driverData = await getDriverDocumentById(doc.driverid);
+                        if (driverData) {
+                            const driverInfo = { id: doc.id, ...doc, driver: driverData };
+                            userHistory.push(driverInfo);
+                            setUserHistory([...userHistory]);
+                            // console.log(driverInfo);
+                            setLoad(true);
+
+                        }
+                    });
+                }
+                setLoad(true);
+            });
+
+            return () => unsubscribe();
+            // try {
+            //   const querySnapshot = await getDocs(q);
+            //   if (querySnapshot.empty) {
+            //     console.log('No matching documents found.');
+            //     setUserHistory([]);
+            //   } else {
+            //     const userHistory = [];
+            //     querySnapshot.forEach(async (doc) => {
+            //       const data = doc.data();
+            //       const driverData = await getDriverDocumentById(data.driverid);
+            //       if (driverData) {
+            //         const driverInfo = { id: doc.id, ...data, driver: driverData };
+            //         userHistory.push(driverInfo);
+            //         setUserHistory([...userHistory]);
+            //       }
+            //     });
+            //     setLoad(true);
+            //   }
+            // } catch (error) {
+            //   console.log('Error searching for documents:', error);
+            //   setUserHistory([]);
+            // }
+        };
+
+
+        // const searchCustomerById = async (customerId) => { //all orders info
+        //     const customersRef = collection(db, 'orders');
+        //     const q = query(customersRef, where('customerid', '==', customerId));
+        //     try {
+        //         const querySnapshot = await getDocs(q);
+        //         if (querySnapshot.empty) {
+        //             console.log('No matching documents found.');
+        //             setMatchingDocuments([]);
+        //         } else {
+        //             const matchingDocuments = [];
+        //             querySnapshot.forEach((doc) => {
+        //                 const data = doc.data();
+        //             getDriverDocumentById(data.driverid)
+        //             .then(drivein => {
+        //                 console.log(drivein);
+        //             })
+        //                 // console.log(data.driverid);
+        //                 matchingDocuments.push({ id: doc.id, ...data });
+        //             });
+        //             console.log(matchingDocuments);
+        //             setMatchingDocuments(matchingDocuments);
+        //             setLoad(true);
+        //         }
+        //     } catch (error) {
+        //         console.log('Error searching for documents:', error);
+        //         setMatchingDocuments([]);
+        //     }
+        // };
+
         fetchData();
         getDriverInfo();
-    }, [id]);
+        searchCustomerById(customerId);
+        getHistory(customerId)
+    }, [id, customerId]);
 
     const placeNameInputValue = placeName ? placeName : 'Loading';
 
@@ -158,7 +292,7 @@ function Destination() {
             {pending ? (
                 'Loading'
             ) : (
-                driveInfo.map((info) => <Driver key={info.id} lists={info} />)
+                driverInfo.map((info) => <Driver key={info.id} lists={info} />)
             )}
             <div className="login-form">
                 <div className='inputs'>
@@ -179,29 +313,36 @@ function Destination() {
                         onChange={(e) => getInput(e)}
                         className='input'
                     />
-                    {success ? <div className="login-button">waiting...</div> : <button type='submit' onClick={handleOrder} className='login-button'>Order Ride</button>}
+                    {success ? (
+                        <div className="login-button">waiting...</div>
+                    ) : (
+                        <button type='submit' onClick={handleOrder} className='login-button'>
+                            Order Ride
+                        </button>
+                    )}
                 </div>
             </div>
+            {load &&
+                matchingDocuments.sort().map((history) => (
+                    <Box key={history.id} history={history} />
+                ))}
             <div className="login-form table">
-            <table>
-                <tr>
-                    <th>date</th>
-                    <th>driver</th>
-                    <th>action</th>
-                </tr>
-                <tbody>
-                    <tr>
-                        <td>12-02-2023</td>
-                        <td>jack maize</td>
-                        <td><img src={cance} className='icon cancel' /> {React.createElement('br')} pending</td>
-                    </tr>
-                    <tr>
-                        <td>12-02-2023</td>
-                        <td>jack maize</td>
-                        <td><img src={check} className='icon' /> {React.createElement('br')} succes</td>
-                    </tr>
-                </tbody>
-            </table>
+                <h2>History</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Driver</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {load &&
+                            userHistory.sort().map((history) => (
+                                <Tablerows key={history.id} history={history} />
+                            ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
