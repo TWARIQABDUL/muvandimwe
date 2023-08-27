@@ -1,6 +1,7 @@
 import React from 'react'
 import succes from '../images/check.png'
 import active from '../images/close.png'
+<<<<<<< HEAD
 import { db } from '../firebase';
 import { doc, updateDoc } from '@firebase/firestore';
 import { Dialog } from '@capacitor/dialog';
@@ -29,15 +30,22 @@ function Tablerows({ history }) {
           }
     }
     // console.log(history);
+=======
+function Tablerows({ history }) {
+>>>>>>> 92bb5e6756c933448346fa9a1943d79d4a5eb749
     return (
         <tr>
             <td>{history.date}</td>
             <td>{history.driver.name}</td>
+<<<<<<< HEAD
             <td><img 
             src={(history.status === 'succes') ? succes : active} 
             className='icon cancel'onClick={()=>{cancelOrderRequest(history.id)}}
 
              /> {React.createElement('br')} {history.status}</td>
+=======
+            <td><img src={(history.status === 'succes') ? succes : active} className='icon cancel' /> {React.createElement('br')} {history.status}</td>
+>>>>>>> 92bb5e6756c933448346fa9a1943d79d4a5eb749
         </tr>
     )
 }
