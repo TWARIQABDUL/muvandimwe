@@ -10,6 +10,7 @@ export const SessionProvider = ({ children }) => {
     const setSession = (value) => {
         steSes(value)
     }
+    const [userInfo,setUserInfo] = useState(null)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -17,6 +18,7 @@ export const SessionProvider = ({ children }) => {
             const docRef = doc(db, "users", id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
+              setUserInfo(docSnap.data())
               return { id: docSnap.id, ...docSnap.data() };
             } else {
               return null;
@@ -77,7 +79,7 @@ export const SessionProvider = ({ children }) => {
 
     }, [])
     return (
-        <SessionContext.Provider value={{ session, setSession, isLoading }}>
+        <SessionContext.Provider value={{ session, setSession, isLoading, userInfo }}>
             {children}
         </SessionContext.Provider>
     )

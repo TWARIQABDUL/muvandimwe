@@ -68,3 +68,11 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+the  to days task was completed I manged to add the functionality where instead of creating two diferent application one fo users and other fo drivers I added the condition for checking the category where the user is belonged either "user" or "driver"
+
+I also updated the signup so that the users collection will now have the category field 
+
+this change was not published becouse the driver is not yet ablle to accept the order hope to finish it up tomorrow.

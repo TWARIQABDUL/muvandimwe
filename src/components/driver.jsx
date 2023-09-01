@@ -39,7 +39,7 @@ function Driver({ lists }) {
       setDistance(Number(distanceInKilometers.toFixed(1)));
     }
   }, [position]);
-
+  // console.log("my Location:", position, "DriverLoc :", lists.location);
   function extractLetter(string) {
     return string.charAt(0).toUpperCase();
   }
@@ -54,7 +54,11 @@ function Driver({ lists }) {
           <h2 className='title'>{lists.name}</h2>
           {/* {React.createElement('br')} */}
           <div className="bottom">
-            {distance ? <p className='title'>{distance} Km away</p> : <p className='title'>Loading distance...</p>}
+            {distance !== null ? (
+              <p className='title'>{distance === 0 ? 'Near you' : `${distance} Km away`}</p>
+            ) : (
+              <p className='title'>Loading distance...</p>
+            )}
             <p className='title'>{(lists.ratings / lists.counts).toFixed(1)} rating</p>
             <p className='title'>{lists.type}  {lists.seats} seats</p>
           </div>

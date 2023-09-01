@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Driver from './driver'
-import { collection, onSnapshot } from 'firebase/firestore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
 import { db } from '../firebase'
 import Loading from './loadinf'
 
@@ -9,9 +9,12 @@ function DriverList() {
   const [driverList, setDriverList] = useState([]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, 'drivers'), (snapshot) => {
+    const customersRef = collection(db, 'drivers');
+            const q = query(customersRef);
+    const unsubscribe = onSnapshot(q, (snapshot) => {
       const items = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setDriverList(items);
+      console.log(items);
       setLoaded(true);
     });
 
